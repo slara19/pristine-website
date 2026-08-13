@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+
+# Office lock files
+~$*
+
+# Internal planning notes (not part of the site)
+Hoja de ruta.docx
+
+# Local Claude Code settings
+.claude/settings.local.json
