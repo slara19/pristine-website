@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import emailjs from '@emailjs/browser';
 import {
   Sparkles, ChevronDown, Home, TrendingUp, Building2, Hammer, Key, Layers,
   Check, Phone, Mail, MapPin, Star, ArrowRight,
@@ -141,6 +142,55 @@ function PropStep({ svc, d, u }) {
   return null;
 }
 
+function buildExtras(svc, d) {
+  const lines = [];
+  if (d.address) lines.push(`Address: ${d.address}`);
+  if (svc === 'airbnb') {
+    if (d.beds)     lines.push(`Bedrooms: ${d.beds}`);
+    if (d.baths)    lines.push(`Bathrooms: ${d.baths}`);
+    if (d.propType) lines.push(`Property Type: ${d.propType}`);
+    if (d.freq)     lines.push(`Frequency: ${d.freq}`);
+    if (d.checkin)  lines.push(`Next Check-in: ${d.checkin}`);
+    if (d.linen)    lines.push('Extra: Linen change & bed making ✓');
+  } else if (svc === 'presale') {
+    if (d.beds)      lines.push(`Bedrooms: ${d.beds}`);
+    if (d.baths)     lines.push(`Bathrooms: ${d.baths}`);
+    if (d.propType)  lines.push(`Property Type: ${d.propType}`);
+    if (d.listDate)  lines.push(`Open Home / Listing Date: ${d.listDate}`);
+    if (d.condition) lines.push(`Condition: ${d.condition}`);
+    if (d.exterior)  lines.push('Extra: Include exterior areas ✓');
+    if (d.staging)   lines.push('Extra: Working with agent / staging company ✓');
+  } else if (svc === 'commercial') {
+    if (d.bizType)  lines.push(`Business Type: ${d.bizType}`);
+    if (d.size)     lines.push(`Size: ${d.size}`);
+    if (d.freq)     lines.push(`Frequency: ${d.freq}`);
+    if (d.access)   lines.push(`Access Hours: ${d.access}`);
+    if (d.baths)    lines.push(`Bathrooms: ${d.baths}`);
+    if (d.kitchens) lines.push(`Kitchens / Breakrooms: ${d.kitchens}`);
+  } else if (svc === 'construction') {
+    if (d.projType) lines.push(`Project Type: ${d.projType}`);
+    if (d.stage)    lines.push(`Clean Stage: ${d.stage}`);
+    if (d.size)     lines.push(`Size: ${d.size}`);
+    if (d.handover) lines.push(`Handover Date: ${d.handover}`);
+  } else if (svc === 'endoflease') {
+    if (d.beds)        lines.push(`Bedrooms: ${d.beds}`);
+    if (d.baths)       lines.push(`Bathrooms: ${d.baths}`);
+    if (d.living)      lines.push(`Living Areas: ${d.living}`);
+    if (d.propType)    lines.push(`Property Type: ${d.propType}`);
+    if (d.furnished)   lines.push(`Furnished: ${d.furnished}`);
+    if (d.balcony)     lines.push('Extra: Balcony / outdoor area ✓');
+    if (d.garage)      lines.push('Extra: Garage / carport ✓');
+    if (d.oven)        lines.push('Extra: Oven deep clean ✓');
+    if (d.pets)        lines.push('Extra: Pets were in property ✓');
+    if (d.carpetSteam) lines.push('Extra: Carpet steam clean ✓');
+  } else if (svc === 'carpet') {
+    if (d.rooms)   lines.push(`Carpeted Rooms: ${d.rooms}`);
+    if (d.issue)   lines.push(`Main Issue: ${d.issue}`);
+    if (d.petOdor) lines.push('Extra: Pets in property ✓');
+  }
+  return lines.length ? lines.join('\n') : '—';
+}
+
 /* ── QUOTE MODAL ──────────────────────────────────────────────────────────── */
 const FORM_SVCS = [
   { id: 'airbnb',       label: 'Airbnb Cleaning', Icon: Home,       bg: 'bg-rose-50',    border: 'border-rose-200',    ib: 'bg-rose-500'    },
@@ -156,9 +206,33 @@ function QuoteModal({ onClose }) {
   const [svc, setSvc] = useState('');
   const [d, setD] = useState({});
   const [done, setDone] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState('');
   const u = (k, v) => setD(p => ({ ...p, [k]: v }));
   const sel = FORM_SVCS.find(s => s.id === svc);
   const canSend = d.name && d.phone && d.email;
+
+  const handleSend = async () => {
+    if (!canSend || sending) return;
+    setSending(true);
+    setSendError('');
+    try {
+      await emailjs.send('service_ptzeiln', 'template_lsdeywj', {
+        service : sel ? sel.label : svc,
+        name    : d.name,
+        phone   : d.phone,
+        email   : d.email,
+        date    : d.date   || '—',
+        extras  : buildExtras(svc, d),
+        notes   : d.notes  || '—',
+      }, { publicKey: 'pAG7Xde322ReZPvCf' });
+      setDone(true);
+    } catch (err) {
+      setSendError('Something went wrong. Please try again or call us on 0450 349 425.');
+    } finally {
+      setSending(false);
+    }
+  };
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -269,14 +343,15 @@ function QuoteModal({ onClose }) {
                     Continue
                   </button>
                 ) : (
-                  <button onClick={() => { console.log({ svc, ...d }); setDone(true); }}
-                    disabled={!canSend}
-                    className={`flex-1 py-3 rounded-full text-sm font-medium transition-colors ${canSend ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}>
-                    Send Quote Request
+                  <button onClick={handleSend}
+                    disabled={!canSend || sending}
+                    className={`flex-1 py-3 rounded-full text-sm font-medium transition-colors ${canSend && !sending ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}>
+                    {sending ? 'Sending…' : 'Send Quote Request'}
                   </button>
                 )}
               </div>
             )}
+            {sendError && <p className="text-xs text-red-500 text-center mt-2">{sendError}</p>}
           </div>
         )}
         {done && (
