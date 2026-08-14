@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 import {
   Sparkles, ChevronDown, Home, TrendingUp, Building2, Hammer, Key, Layers,
-  Check, Phone, Mail, MapPin, Star, ArrowRight,
+  Check, Phone, Mail, MapPin, Star, ArrowRight, Repeat,
   Shield, Clock, Award, Leaf, X,
 } from 'lucide-react';
 
@@ -66,6 +66,25 @@ function FCheck({ label, checked, onChange, accent }) {
 
 /* ── FORM PROPERTY STEP ───────────────────────────────────────────────────── */
 function PropStep({ svc, d, u }) {
+  if (svc === 'residential') return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <FSel label="Bedrooms" value={d.beds} onChange={v => u('beds', v)} options={['Studio', '1', '2', '3', '4', '5+']} />
+        <FSel label="Bathrooms" value={d.baths} onChange={v => u('baths', v)} options={['1', '2', '3', '4+']} />
+      </div>
+      <FSel label="Property Type" value={d.propType} onChange={v => u('propType', v)} options={['House', 'Apartment', 'Unit', 'Townhouse']} />
+      <FSel label="Frequency" value={d.freq} onChange={v => u('freq', v)} options={['Weekly', 'Fortnightly', 'Monthly', 'One-time']} />
+      <div>
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Extras: tick all that apply</p>
+        <div className="space-y-1">
+          <FCheck label="Inside oven clean" checked={d.oven} onChange={v => u('oven', v)} />
+          <FCheck label="Inside fridge clean" checked={d.fridge} onChange={v => u('fridge', v)} />
+          <FCheck label="Interior windows" checked={d.windows} onChange={v => u('windows', v)} />
+          <FCheck label="Ironing service" checked={d.ironing} onChange={v => u('ironing', v)} />
+        </div>
+      </div>
+    </div>
+  );
   if (svc === 'airbnb') return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3">
@@ -86,7 +105,7 @@ function PropStep({ svc, d, u }) {
       </div>
       <FSel label="Property Type" value={d.propType} onChange={v => u('propType', v)} options={['House', 'Apartment', 'Unit', 'Townhouse']} />
       <FInput label="Open Home / Listing Date" value={d.listDate} onChange={v => u('listDate', v)} type="date" />
-      <FSel label="Property Condition" value={d.condition} onChange={v => u('condition', v)} options={['Good — light touch-up', 'Average — standard clean', 'Needs deep clean']} />
+      <FSel label="Property Condition" value={d.condition} onChange={v => u('condition', v)} options={['Good, light touch-up', 'Average, standard clean', 'Needs deep clean']} />
       <FCheck label="Include exterior areas (garage, paths, outdoor)" checked={d.exterior} onChange={v => u('exterior', v)} />
       <FCheck label="Working with a real estate agent or staging company?" checked={d.staging} onChange={v => u('staging', v)} />
     </div>
@@ -121,7 +140,7 @@ function PropStep({ svc, d, u }) {
       <FSel label="Property Type" value={d.propType} onChange={v => u('propType', v)} options={['House', 'Apartment', 'Unit', 'Townhouse']} />
       <FSel label="Furnished?" value={d.furnished} onChange={v => u('furnished', v)} options={['Unfurnished', 'Semi-furnished', 'Fully furnished']} />
       <div>
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Extras — tick all that apply</p>
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Extras: tick all that apply</p>
         <div className="space-y-1">
           <FCheck label="Balcony / outdoor area" checked={d.balcony} onChange={v => u('balcony', v)} />
           <FCheck label="Garage / carport" checked={d.garage} onChange={v => u('garage', v)} />
@@ -145,7 +164,16 @@ function PropStep({ svc, d, u }) {
 function buildExtras(svc, d) {
   const lines = [];
   if (d.address) lines.push(`Address: ${d.address}`);
-  if (svc === 'airbnb') {
+  if (svc === 'residential') {
+    if (d.beds)     lines.push(`Bedrooms: ${d.beds}`);
+    if (d.baths)    lines.push(`Bathrooms: ${d.baths}`);
+    if (d.propType) lines.push(`Property Type: ${d.propType}`);
+    if (d.freq)     lines.push(`Frequency: ${d.freq}`);
+    if (d.oven)     lines.push('Extra: Inside oven clean ✓');
+    if (d.fridge)   lines.push('Extra: Inside fridge clean ✓');
+    if (d.windows)  lines.push('Extra: Interior windows ✓');
+    if (d.ironing)  lines.push('Extra: Ironing service ✓');
+  } else if (svc === 'airbnb') {
     if (d.beds)     lines.push(`Bedrooms: ${d.beds}`);
     if (d.baths)    lines.push(`Bathrooms: ${d.baths}`);
     if (d.propType) lines.push(`Property Type: ${d.propType}`);
@@ -188,17 +216,18 @@ function buildExtras(svc, d) {
     if (d.issue)   lines.push(`Main Issue: ${d.issue}`);
     if (d.petOdor) lines.push('Extra: Pets in property ✓');
   }
-  return lines.length ? lines.join('\n') : '—';
+  return lines.length ? lines.join('\n') : 'None';
 }
 
 /* ── QUOTE MODAL ──────────────────────────────────────────────────────────── */
 const FORM_SVCS = [
-  { id: 'airbnb',       label: 'Airbnb Cleaning', Icon: Home,       bg: 'bg-rose-50',    border: 'border-rose-200',    ib: 'bg-rose-500'    },
-  { id: 'presale',      label: 'Pre-Sale Clean',   Icon: TrendingUp, bg: 'bg-emerald-50', border: 'border-emerald-200', ib: 'bg-emerald-500' },
-  { id: 'commercial',   label: 'Commercial',        Icon: Building2,  bg: 'bg-slate-50',   border: 'border-slate-200',   ib: 'bg-slate-600'   },
-  { id: 'construction', label: 'Construction',      Icon: Hammer,     bg: 'bg-amber-50',   border: 'border-amber-200',   ib: 'bg-amber-500'   },
-  { id: 'endoflease',   label: 'End of Lease',      Icon: Key,        bg: 'bg-sky-50',     border: 'border-sky-200',     ib: 'bg-sky-500'     },
-  { id: 'carpet',       label: 'Carpet Cleaning',   Icon: Layers,     bg: 'bg-purple-50',  border: 'border-purple-200',  ib: 'bg-purple-500'  },
+  { id: 'residential',  label: 'Residential Cleaning',   Icon: Repeat,     bg: 'bg-teal-50',    border: 'border-teal-200',    ib: 'bg-teal-500'    },
+  { id: 'carpet',       label: 'Carpet Steam Cleaning',  Icon: Layers,     bg: 'bg-purple-50',  border: 'border-purple-200',  ib: 'bg-purple-500'  },
+  { id: 'presale',      label: 'Pre-Sale Clean',         Icon: TrendingUp, bg: 'bg-emerald-50', border: 'border-emerald-200', ib: 'bg-emerald-500' },
+  { id: 'airbnb',       label: 'Airbnb Cleaning',        Icon: Home,       bg: 'bg-rose-50',    border: 'border-rose-200',    ib: 'bg-rose-500'    },
+  { id: 'commercial',   label: 'Commercial',             Icon: Building2,  bg: 'bg-slate-50',   border: 'border-slate-200',   ib: 'bg-slate-600'   },
+  { id: 'construction', label: 'Construction',           Icon: Hammer,     bg: 'bg-amber-50',   border: 'border-amber-200',   ib: 'bg-amber-500'   },
+  { id: 'endoflease',   label: 'End of Lease',           Icon: Key,        bg: 'bg-sky-50',     border: 'border-sky-200',     ib: 'bg-sky-500'     },
 ];
 
 function QuoteModal({ onClose }) {
@@ -222,9 +251,9 @@ function QuoteModal({ onClose }) {
         name    : d.name,
         phone   : d.phone,
         email   : d.email,
-        date    : d.date   || '—',
+        date    : d.date   || 'Not specified',
         extras  : buildExtras(svc, d),
-        notes   : d.notes  || '—',
+        notes   : d.notes  || 'None',
       }, { publicKey: 'pAG7Xde322ReZPvCf' });
       setDone(true);
     } catch (err) {
@@ -310,7 +339,7 @@ function QuoteModal({ onClose }) {
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-sm text-gray-600">Almost done — just your contact details.</p>
+              <p className="text-sm text-gray-600">Almost done! Just your contact details.</p>
               <FInput label="Full Name" value={d.name} onChange={v => u('name', v)} placeholder="Your full name" />
               <div className="grid grid-cols-2 gap-3">
                 <FInput label="Phone" value={d.phone} onChange={v => u('phone', v)} type="tel" placeholder="0400 000 000" />
@@ -366,21 +395,23 @@ function QuoteModal({ onClose }) {
 
 /* ── TABS ─────────────────────────────────────────────────────────────────── */
 const TABS = [
-  { id: 'airbnb',       label: 'Airbnb',       Icon: Home       },
+  { id: 'residential',  label: 'Residential',  Icon: Repeat     },
+  { id: 'carpet',       label: 'Carpet Steam', Icon: Layers     },
   { id: 'presale',      label: 'Pre-Sale',      Icon: TrendingUp },
+  { id: 'airbnb',       label: 'Airbnb',       Icon: Home       },
   { id: 'commercial',   label: 'Commercial',    Icon: Building2  },
   { id: 'construction', label: 'Construction',  Icon: Hammer     },
   { id: 'endoflease',   label: 'End of Lease',  Icon: Key        },
-  { id: 'carpet',       label: 'Carpet',        Icon: Layers     },
 ];
 
 const TAB_BG = {
-  airbnb:       'from-rose-50 via-pink-50 to-rose-100',
+  residential:  'from-teal-50 via-cyan-50 to-teal-100',
+  carpet:       'from-purple-50 via-violet-50 to-purple-100',
   presale:      'from-emerald-50 via-green-50 to-emerald-100',
+  airbnb:       'from-rose-50 via-pink-50 to-rose-100',
   commercial:   'from-slate-100 via-gray-100 to-slate-200',
   construction: 'from-amber-50 via-orange-50 to-amber-100',
   endoflease:   'from-sky-50 via-blue-50 to-sky-100',
-  carpet:       'from-purple-50 via-violet-50 to-purple-100',
 };
 
 /* ── TAB CARDS ────────────────────────────────────────────────────────────── */
@@ -417,6 +448,34 @@ function Checklist({ items, checkClass }) {
 }
 
 const TAB_CONTENT = {
+  residential: (
+    <Card>
+      <CardHeader Icon={Repeat} iconBg="bg-teal-500" title="Home Cleaning Schedule" sub="Weekly, fortnightly or one-off"
+        badge={<span className="text-xs font-medium text-teal-600 bg-teal-50 px-2 py-1 rounded-full">On Schedule</span>} />
+      <Checklist checkClass="bg-teal-100 text-teal-600" items={['Kitchen, bathrooms & living areas','Floors vacuumed & mopped','Dusting & surface wipe-down','Beds made (on request)','Same trusted cleaner each visit']} />
+      <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+        <span className="text-xs text-gray-500">Next clean: Fri, 9:00 AM</span>
+        <span className="text-xs font-medium text-teal-600 bg-teal-50 px-2 py-1 rounded-full">Confirmed</span>
+      </div>
+    </Card>
+  ),
+  carpet: (
+    <Card>
+      <CardHeader Icon={Layers} iconBg="bg-purple-500" title="Deep Steam Clean" sub="Professional grade results" />
+      <div className="space-y-3 mb-4">
+        {[{n:'1',l:'Pre-treatment spray',c:'bg-purple-100 text-purple-700'},{n:'2',l:'Hot water extraction',c:'bg-purple-200 text-purple-800'},{n:'3',l:'Deodorize & sanitize',c:'bg-purple-400 text-white'},{n:'4',l:'Speed dry finish',c:'bg-purple-600 text-white'}].map(r=>(
+          <div key={r.n} className="flex items-center gap-3">
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${r.c}`}>{r.n}</div>
+            <p className="text-sm text-gray-700">{r.l}</p>
+          </div>
+        ))}
+      </div>
+      <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+        <span className="text-xs text-gray-500">Average dry time</span>
+        <span className="text-xs font-semibold text-purple-600">2–4 hours</span>
+      </div>
+    </Card>
+  ),
   airbnb: (
     <Card>
       <CardHeader Icon={Home} iconBg="bg-rose-500" title="Guest-Ready Checklist" sub="Turnover in 2–3 hrs"
@@ -491,28 +550,11 @@ const TAB_CONTENT = {
       <Checklist checkClass="bg-sky-100 text-sky-600" items={['Oven & kitchen deep clean','Bathroom & toilet sanitize','Windows inside & out','Walls & skirting boards','Garage & outdoor areas','+ Carpet steam clean available']} />
     </Card>
   ),
-  carpet: (
-    <Card>
-      <CardHeader Icon={Layers} iconBg="bg-purple-500" title="Deep Steam Clean" sub="Professional grade results" />
-      <div className="space-y-3 mb-4">
-        {[{n:'1',l:'Pre-treatment spray',c:'bg-purple-100 text-purple-700'},{n:'2',l:'Hot water extraction',c:'bg-purple-200 text-purple-800'},{n:'3',l:'Deodorize & sanitize',c:'bg-purple-400 text-white'},{n:'4',l:'Speed dry finish',c:'bg-purple-600 text-white'}].map(r=>(
-          <div key={r.n} className="flex items-center gap-3">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${r.c}`}>{r.n}</div>
-            <p className="text-sm text-gray-700">{r.l}</p>
-          </div>
-        ))}
-      </div>
-      <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-        <span className="text-xs text-gray-500">Average dry time</span>
-        <span className="text-xs font-semibold text-purple-600">2–4 hours</span>
-      </div>
-    </Card>
-  ),
 };
 
 /* ── APP ──────────────────────────────────────────────────────────────────── */
 export default function App() {
-  const [tab, setTab] = useState('airbnb');
+  const [tab, setTab] = useState('residential');
   const [showForm, setShowForm] = useState(false);
   const open = () => setShowForm(true);
 
@@ -543,7 +585,7 @@ export default function App() {
             <a href="#contact" className="text-sm text-gray-700 hover:text-black transition-colors">Contact</a>
           </div>
           <div className="flex items-center gap-4">
-            <a href="tel:0450349425" className="hidden md:flex items-center gap-1.5 text-sm text-gray-700 hover:text-black transition-colors">
+            <a href="tel:0450349425" className="hidden md:flex items-center gap-1.5 text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap">
               <Phone className="w-4 h-4" /> 0450 349 425
             </a>
             <div className="hidden md:flex items-center gap-2 pl-4 border-l border-gray-200">
@@ -582,7 +624,7 @@ export default function App() {
 
         <p className="animate-fade-in-up text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
           style={{ opacity: 0, animationDelay: '0.4s' }}>
-          Airbnb turnovers, pre-sale presentations, commercial spaces, construction sites, end of lease and carpet — Pristine delivers across all of Hobart and Greater Tasmania.
+          Residential homes, carpet steam cleaning, Airbnb turnovers, pre-sale presentations, commercial spaces, construction sites and end of lease. Pristine delivers across all of Hobart and Greater Tasmania.
         </p>
 
         <div className="animate-fade-in-up mb-12 flex flex-col sm:flex-row items-center justify-center gap-4"
@@ -641,13 +683,13 @@ export default function App() {
           <div className="text-center mb-16">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Simple Process</p>
             <h2 className="text-4xl md:text-5xl font-normal text-black leading-tight">How It Works</h2>
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto">From your first message to a spotless space — here's what to expect.</p>
+            <p className="text-gray-500 mt-4 max-w-xl mx-auto">From your first message to a spotless space: here's what to expect.</p>
           </div>
           <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-4 md:overflow-visible md:pb-0 -mx-6 px-6 md:mx-0 md:px-0">
             {[
               { n: '01', title: 'Request Your Quote', desc: 'Fill in our quick form with your property details and preferred date. Takes under 2 minutes, no commitment required.' },
               { n: '02', title: 'Receive Your Quote', desc: 'We review your request and send a detailed, transparent quote within a few hours. No hidden fees, no surprises.' },
-              { n: '03', title: 'We Show Up & Deliver', desc: 'Our fully insured team arrives on time and cleans to the highest professional standard — every time, without exception.' },
+              { n: '03', title: 'We Show Up & Deliver', desc: 'Our fully insured team arrives on time and cleans to the highest professional standard, every time, without exception.' },
               { n: '04', title: '100% Satisfied or Free', desc: "Not happy with any part of the clean? We return within 24 hours and fix it at no cost. Guaranteed, no arguments." },
             ].map((s, i) => (
               <div key={i} className="flex-shrink-0 w-64 snap-center md:w-auto text-center">
@@ -691,12 +733,13 @@ export default function App() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { Icon: Home,       title: 'Airbnb Cleaning',      badge: 'Most Popular',    desc: 'Fast, hotel-quality turnovers between guests. We ensure your property is always 5-star ready for every arrival — on time, every time.' },
-              { Icon: TrendingUp, title: 'Pre-Sale Clean',        badge: 'High Impact',     desc: 'First impressions sell homes. A deep presentation clean that maximises buyer appeal — perfect before open homes, photos, or listing day.' },
-              { Icon: Building2,  title: 'Commercial Cleaning',   badge: null,              desc: 'Tailored schedules for offices, retail, restaurants, and more. Reliable, discreet, and fully insured — your business keeps running.' },
-              { Icon: Hammer,     title: 'Construction Cleaning', badge: null,              desc: 'Post-build dust, debris, and residue completely removed. We prepare your site for final inspection or immediate occupancy.' },
-              { Icon: Key,        title: 'End of Lease',          badge: 'Bond Guaranteed', desc: 'Comprehensive bond-back cleaning meeting real estate agent standards. Carpet steam clean available as an add-on.' },
-              { Icon: Layers,     title: 'Carpet Cleaning',       badge: null,              desc: 'Professional steam cleaning removes deep stains, allergens, and pet odours. Your carpets look brand new — fast dry times.' },
+              { Icon: Repeat,     title: 'Residential Cleaning',   badge: 'Most Requested',  desc: 'Weekly, fortnightly, or one-off cleans tailored to your home and routine. Consistent, reliable service you can count on every single visit.' },
+              { Icon: Layers,     title: 'Carpet Steam Cleaning',  badge: null,              desc: 'Professional steam cleaning removes deep stains, allergens, and pet odours. Your carpets look brand new, with fast dry times.' },
+              { Icon: TrendingUp, title: 'Pre-Sale Clean',         badge: 'High Impact',     desc: 'First impressions sell homes. A deep presentation clean that maximises buyer appeal. Perfect before open homes, photos, or listing day.' },
+              { Icon: Home,       title: 'Airbnb Cleaning',        badge: 'Most Popular',    desc: 'Fast, hotel-quality turnovers between guests. We ensure your property is always 5-star ready for every arrival, on time, every time.' },
+              { Icon: Building2,  title: 'Commercial Cleaning',    badge: null,              desc: 'Tailored schedules for offices, retail, restaurants, and more. Reliable, discreet, and fully insured, so your business keeps running.' },
+              { Icon: Hammer,     title: 'Construction Cleaning',  badge: null,              desc: 'Post-build dust, debris, and residue completely removed. We prepare your site for final inspection or immediate occupancy.' },
+              { Icon: Key,        title: 'End of Lease',           badge: 'Bond Guaranteed', desc: 'Comprehensive bond-back cleaning meeting real estate agent standards. Carpet steam clean available as an add-on.' },
             ].map((s, i) => (
               <div key={i} onClick={open}
                 className="group p-6 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all cursor-pointer">
@@ -725,7 +768,7 @@ export default function App() {
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Why Pristine</p>
               <h2 className="text-4xl md:text-5xl font-normal text-black mb-6 leading-tight">Hobart's Most<br />Trusted Cleaners</h2>
               <p className="text-gray-600 leading-relaxed mb-8">
-                With over 4 years of professional cleaning experience across Australia, Pristine is now bringing that same standard of excellence to Hobart and Greater Tasmania. From Airbnb hosts to real estate agents and commercial businesses — consistent results, no lock-in contracts, no hidden fees.
+                With over 4 years of professional cleaning experience across Australia, Pristine is now bringing that same standard of excellence to Hobart and Greater Tasmania. From Airbnb hosts to real estate agents and commercial businesses, all backed by consistent results, no lock-in contracts, no hidden fees.
               </p>
               <button onClick={open} className="bg-black text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
                 Get Your Free Quote
@@ -762,7 +805,7 @@ export default function App() {
             {[
               { name: 'Megan Foster',      role: 'Regular Cleaning, Glenorchy',  quote: "Between work and two kids, the house was always a mess by Friday. Now our regular clean means we actually get our weekends back. The team is reliable, friendly, and never misses a spot." },
               { name: 'Rachel Ong',        role: 'Carpet Steam Clean, Kingston', quote: "We had old wine and pet stains we thought were permanent. The steam clean lifted almost everything and the carpets smelled fresh for weeks. Genuinely didn't expect that result." },
-              { name: 'Chloe Bennett',     role: 'End of Lease, South Hobart',   quote: 'We booked our end of lease clean two days before handover and they still fit us in and did a spotless job — oven, windows, carpets, all of it. Saved us so much stress.' },
+              { name: 'Chloe Bennett',     role: 'End of Lease, South Hobart',   quote: 'We booked our end of lease clean two days before handover and they still fit us in and did a spotless job: oven, windows, carpets, all of it. Saved us so much stress.' },
             ].map((t, i) => (
               <div key={i} className="flex-shrink-0 w-80 snap-center md:w-auto p-6 rounded-2xl border border-gray-100 hover:shadow-sm transition-all">
                 <div className="flex mb-4">
@@ -809,7 +852,7 @@ export default function App() {
           </div>
           <div className="flex flex-col sm:flex-row gap-6 justify-center text-sm text-gray-500">
             {[{ Icon: MapPin, text: 'Hobart & Greater Tasmania' }, { Icon: Phone, text: '0450 349 425' }, { Icon: Mail, text: 'pristine.hobart@gmail.com' }].map((c, i) => (
-              <div key={i} className="flex items-center justify-center gap-2">
+              <div key={i} className="flex items-center justify-center gap-2 whitespace-nowrap">
                 <c.Icon className="w-4 h-4" /><span>{c.text}</span>
               </div>
             ))}
@@ -841,7 +884,7 @@ export default function App() {
             <div>
               <p className="font-semibold text-black mb-3">Services</p>
               <ul className="space-y-2 text-gray-500">
-                {['Airbnb Cleaning', 'Pre-Sale Clean', 'Commercial', 'Construction', 'End of Lease', 'Carpet Cleaning'].map(s => (
+                {['Residential Cleaning', 'Carpet Steam Cleaning', 'Pre-Sale Clean', 'Airbnb Cleaning', 'Commercial', 'Construction', 'End of Lease'].map(s => (
                   <li key={s} onClick={open} className="hover:text-black cursor-pointer transition-colors">{s}</li>
                 ))}
               </ul>
