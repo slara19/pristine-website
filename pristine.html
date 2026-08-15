@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Pristine Cleaning Co: Residential, Carpet Steam, Pre-Sale, Airbnb, Commercial, Construction & End of Lease Cleaning in Hobart, Tasmania." />
+  <meta name="description" content="Pristine Cleaning Co: Residential, Carpet Steam, Pre-Sale & End of Lease Cleaning in Hobart, Tasmania." />
   <title>Pristine Cleaning Co. | Hobart's Premier Cleaning Service</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -131,18 +131,6 @@
           </div>
         </div>
       );
-      if (svc==='airbnb') return (
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <FSel label="Bedrooms" value={d.beds} onChange={v=>u('beds',v)} options={['Studio','1','2','3','4','5+']} />
-            <FSel label="Bathrooms" value={d.baths} onChange={v=>u('baths',v)} options={['1','2','3','4+']} />
-          </div>
-          <FSel label="Property Type" value={d.propType} onChange={v=>u('propType',v)} options={['House','Apartment','Unit','Townhouse']} />
-          <FSel label="Frequency" value={d.freq} onChange={v=>u('freq',v)} options={['One-time','Per Checkout','Weekly','Fortnightly']} />
-          <FInput label="Next Check-in Date & Time" value={d.checkin} onChange={v=>u('checkin',v)} type="datetime-local" />
-          <FCheck label="Add linen change & bed making" checked={d.linen} onChange={v=>u('linen',v)} />
-        </div>
-      );
       if (svc==='presale') return (
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -154,26 +142,6 @@
           <FSel label="Property Condition" value={d.condition} onChange={v=>u('condition',v)} options={['Good, light touch-up','Average, standard clean','Needs deep clean']} />
           <FCheck label="Include exterior areas (garage, paths, outdoor)" checked={d.exterior} onChange={v=>u('exterior',v)} />
           <FCheck label="Working with a real estate agent or staging company?" checked={d.staging} onChange={v=>u('staging',v)} />
-        </div>
-      );
-      if (svc==='commercial') return (
-        <div className="space-y-4">
-          <FSel label="Business Type" value={d.bizType} onChange={v=>u('bizType',v)} options={['Office','Retail Store','Restaurant / Café','Medical / Dental','Warehouse','Other']} />
-          <FSel label="Approximate Size" value={d.size} onChange={v=>u('size',v)} options={['Under 100 m²','100–300 m²','300–500 m²','500 m²+']} />
-          <FSel label="Cleaning Frequency" value={d.freq} onChange={v=>u('freq',v)} options={['Daily','3× per week','Weekly','Fortnightly','Monthly','One-time deep clean']} />
-          <FInput label="Preferred Access Hours" value={d.access} onChange={v=>u('access',v)} placeholder="e.g. Mon–Fri before 7am" />
-          <div className="grid grid-cols-2 gap-3">
-            <FInput label="No. of Bathrooms" value={d.baths} onChange={v=>u('baths',v)} type="number" placeholder="0" />
-            <FInput label="No. of Kitchens / Breakrooms" value={d.kitchens} onChange={v=>u('kitchens',v)} type="number" placeholder="0" />
-          </div>
-        </div>
-      );
-      if (svc==='construction') return (
-        <div className="space-y-4">
-          <FSel label="Project Type" value={d.projType} onChange={v=>u('projType',v)} options={['New Build','Renovation','Home Extension','Commercial Build']} />
-          <FSel label="Clean Stage" value={d.stage} onChange={v=>u('stage',v)} options={['Initial post-build (rough clean)','Final pre-handover (detailed)','Both stages']} />
-          <FSel label="Approximate Size" value={d.size} onChange={v=>u('size',v)} options={['Under 100 m²','100–200 m²','200–400 m²','400 m²+']} />
-          <FInput label="Handover / Completion Date" value={d.handover} onChange={v=>u('handover',v)} type="date" />
         </div>
       );
       if (svc==='endoflease') return (
@@ -220,13 +188,6 @@
         if (d.fridge)   lines.push('Extra: Inside fridge clean ✓');
         if (d.windows)  lines.push('Extra: Interior windows ✓');
         if (d.ironing)  lines.push('Extra: Ironing service ✓');
-      } else if (svc === 'airbnb') {
-        if (d.beds)     lines.push(`Bedrooms: ${d.beds}`);
-        if (d.baths)    lines.push(`Bathrooms: ${d.baths}`);
-        if (d.propType) lines.push(`Property Type: ${d.propType}`);
-        if (d.freq)     lines.push(`Frequency: ${d.freq}`);
-        if (d.checkin)  lines.push(`Next Check-in: ${d.checkin}`);
-        if (d.linen)    lines.push('Extra: Linen change & bed making ✓');
       } else if (svc === 'presale') {
         if (d.beds)      lines.push(`Bedrooms: ${d.beds}`);
         if (d.baths)     lines.push(`Bathrooms: ${d.baths}`);
@@ -235,18 +196,6 @@
         if (d.condition) lines.push(`Condition: ${d.condition}`);
         if (d.exterior)  lines.push('Extra: Include exterior areas ✓');
         if (d.staging)   lines.push('Extra: Working with agent / staging company ✓');
-      } else if (svc === 'commercial') {
-        if (d.bizType)  lines.push(`Business Type: ${d.bizType}`);
-        if (d.size)     lines.push(`Size: ${d.size}`);
-        if (d.freq)     lines.push(`Frequency: ${d.freq}`);
-        if (d.access)   lines.push(`Access Hours: ${d.access}`);
-        if (d.baths)    lines.push(`Bathrooms: ${d.baths}`);
-        if (d.kitchens) lines.push(`Kitchens / Breakrooms: ${d.kitchens}`);
-      } else if (svc === 'construction') {
-        if (d.projType) lines.push(`Project Type: ${d.projType}`);
-        if (d.stage)    lines.push(`Clean Stage: ${d.stage}`);
-        if (d.size)     lines.push(`Size: ${d.size}`);
-        if (d.handover) lines.push(`Handover Date: ${d.handover}`);
       } else if (svc === 'endoflease') {
         if (d.beds)        lines.push(`Bedrooms: ${d.beds}`);
         if (d.baths)       lines.push(`Bathrooms: ${d.baths}`);
@@ -271,9 +220,6 @@
       { id:'residential',  label:'Residential Cleaning',  icon:'Repeat',     bg:'bg-teal-50',    border:'border-teal-200',    ib:'bg-teal-500'    },
       { id:'carpet',       label:'Carpet Steam Cleaning', icon:'Layers',     bg:'bg-purple-50',  border:'border-purple-200',  ib:'bg-purple-500'  },
       { id:'presale',      label:'Pre-Sale Clean',        icon:'TrendingUp', bg:'bg-emerald-50', border:'border-emerald-200', ib:'bg-emerald-500' },
-      { id:'airbnb',       label:'Airbnb Cleaning',       icon:'Home',       bg:'bg-rose-50',    border:'border-rose-200',    ib:'bg-rose-500'    },
-      { id:'commercial',   label:'Commercial',            icon:'Building2',  bg:'bg-slate-50',   border:'border-slate-200',   ib:'bg-slate-600'   },
-      { id:'construction', label:'Construction',          icon:'Hammer',     bg:'bg-amber-50',   border:'border-amber-200',   ib:'bg-amber-500'   },
       { id:'endoflease',   label:'End of Lease',          icon:'Key',        bg:'bg-sky-50',     border:'border-sky-200',     ib:'bg-sky-500'     },
     ];
 
@@ -439,18 +385,12 @@
       { id:'residential',  label:'Residential',  icon:'Repeat'     },
       { id:'carpet',       label:'Carpet Steam', icon:'Layers'     },
       { id:'presale',      label:'Pre-Sale',      icon:'TrendingUp' },
-      { id:'airbnb',       label:'Airbnb',       icon:'Home'       },
-      { id:'commercial',   label:'Commercial',    icon:'Building2'  },
-      { id:'construction', label:'Construction',  icon:'Hammer'     },
       { id:'endoflease',   label:'End of Lease',  icon:'Key'        },
     ];
     const TAB_BG = {
       residential:'from-teal-50 via-cyan-50 to-teal-100',
       carpet:'from-purple-50 via-violet-50 to-purple-100',
       presale:'from-emerald-50 via-green-50 to-emerald-100',
-      airbnb:'from-rose-50 via-pink-50 to-rose-100',
-      commercial:'from-slate-100 via-gray-100 to-slate-200',
-      construction:'from-amber-50 via-orange-50 to-amber-100',
       endoflease:'from-sky-50 via-blue-50 to-sky-100',
     };
 
@@ -512,17 +452,6 @@
           </div>
         </Card>
       ),
-      airbnb: (
-        <Card>
-          <CardHeader icon="Home" iconBg="bg-rose-500" title="Guest-Ready Checklist" sub="Turnover in 2–3 hrs"
-            badge={<div className="flex gap-0.5">{[0,1,2,3,4].map(i=><Icon key={i} name="Star" className="w-3 h-3" style={{fill:'#fbbf24',color:'#fbbf24'}}/>)}</div>} />
-          <Checklist dot="bg-green-100" items={['Kitchen & appliances sanitized','Bathrooms deep cleaned','Fresh linens & towels set','Floors vacuumed & mopped','Amenities restocked']} />
-          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-xs text-gray-500">Last clean: Today, 10:30 AM</span>
-            <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Guest-ready</span>
-          </div>
-        </Card>
-      ),
       presale: (
         <Card>
           <CardHeader icon="TrendingUp" iconBg="bg-emerald-500" title="Pre-Sale Presentation" sub="Maximise your sale price" badge="Open Home" />
@@ -530,45 +459,6 @@
           <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
             <span className="text-xs text-gray-500">Works with staging companies</span>
             <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Sale-ready</span>
-          </div>
-        </Card>
-      ),
-      commercial: (
-        <Card>
-          <CardHeader icon="Building2" iconBg="bg-slate-700" title="Commercial Schedule" sub="Flexible & reliable" badge="Active" />
-          <div className="space-y-2 mb-4">
-            {[{l:'Daily Office Clean',f:'Mon–Fri',a:true},{l:'Weekly Deep Clean',f:'Every Friday',a:true},{l:'Monthly Sanitize',f:'1st of month',a:false}].map((r,i)=>(
-              <div key={i} className={`flex items-center justify-between p-2.5 rounded-lg ${r.a?'bg-slate-50':'bg-gray-50'}`}>
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${r.a?'bg-green-500':'bg-gray-300'}`}/>
-                  <p className="text-sm font-medium text-gray-800">{r.l}</p>
-                </div>
-                <p className="text-xs text-gray-500">{r.f}</p>
-              </div>
-            ))}
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
-            <Icon name="Shield" className="w-3.5 h-3.5"/>
-            <span>Fully insured · Police cleared staff</span>
-          </div>
-        </Card>
-      ),
-      construction: (
-        <Card>
-          <CardHeader icon="Hammer" iconBg="bg-amber-500" title="Post-Build Clean" sub="Site ready for handover" badge="In Progress" />
-          <div className="mb-4">
-            <div className="flex justify-between text-xs text-gray-600 mb-1.5"><span>Overall progress</span><span className="font-semibold">85%</span></div>
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden"><div className="h-full bg-amber-500 rounded-full" style={{width:'85%'}}/></div>
-          </div>
-          <div className="space-y-2">
-            {[{l:'Dust & debris removal',d:true},{l:'Window & glass cleaning',d:true},{l:'Floor scrub & polish',d:true},{l:'Final inspection report',d:false}].map((r,i)=>(
-              <div key={i} className="flex items-center gap-2">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${r.d?'bg-green-100':'bg-gray-100'}`}>
-                  <Icon name="Check" className={`w-3 h-3 ${r.d?'text-green-600':'text-gray-300'}`}/>
-                </div>
-                <p className={`text-sm ${r.d?'text-gray-700':'text-gray-400'}`}>{r.l}</p>
-              </div>
-            ))}
           </div>
         </Card>
       ),
@@ -657,7 +547,7 @@
 
             <p className="animate-fade-in-up text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
               style={{opacity:0,animationDelay:'0.4s'}}>
-              Residential homes, carpet steam cleaning, Airbnb turnovers, pre-sale presentations, commercial spaces, construction sites and end of lease. Pristine delivers across all of Hobart and Greater Tasmania.
+              Residential homes, carpet steam cleaning, pre-sale presentations and end of lease. Pristine delivers across all of Hobart and Greater Tasmania.
             </p>
 
             <div className="animate-fade-in-up mb-12 flex flex-col sm:flex-row items-center justify-center gap-4"
@@ -704,7 +594,7 @@
             <div className="animate-fade-in-up mt-16 flex flex-wrap items-center justify-center gap-8"
               style={{opacity:0,animationDelay:'0.8s'}}>
               <span className="text-xs uppercase tracking-widest text-gray-400 font-medium">Trusted by</span>
-              {['Airbnb Hosts','Property Developers','Real Estate Agencies','Hobart CBD Offices','Construction Companies'].map(n=>(
+              {['Homeowners','Property Developers','Real Estate Agencies','Tenants & Renters'].map(n=>(
                 <span key={n} className="text-sm font-semibold text-gray-300 uppercase tracking-wide">{n}</span>
               ))}
             </div>
@@ -764,14 +654,11 @@
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Our Services</p>
                 <h2 className="text-4xl md:text-5xl font-normal text-black leading-tight">Everything You Need,<br/>Spotlessly Delivered</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {[
                   {icon:'Repeat',     title:'Residential Cleaning',   badge:'Most Requested', desc:'Weekly, fortnightly, or one-off cleans tailored to your home and routine. Consistent, reliable service you can count on every single visit.'},
                   {icon:'Layers',     title:'Carpet Steam Cleaning',  badge:null,             desc:'Professional steam cleaning removes deep stains, allergens, and pet odours. Your carpets look brand new, with fast dry times.'},
                   {icon:'TrendingUp', title:'Pre-Sale Clean',         badge:'High Impact',    desc:'First impressions sell homes. A deep presentation clean that maximises buyer appeal. Perfect before open homes, photos, or listing day.'},
-                  {icon:'Home',       title:'Airbnb Cleaning',        badge:'Most Popular',   desc:'Fast, hotel-quality turnovers between guests. We ensure your property is always 5-star ready for every arrival, on time, every time.'},
-                  {icon:'Building2',  title:'Commercial Cleaning',    badge:null,             desc:'Tailored schedules for offices, retail, restaurants, and more. Reliable, discreet, and fully insured, so your business keeps running.'},
-                  {icon:'Hammer',     title:'Construction Cleaning',  badge:null,             desc:'Post-build dust, debris, and residue completely removed. We prepare your site for final inspection or immediate occupancy.'},
                   {icon:'Key',        title:'End of Lease',           badge:'Bond Guaranteed',desc:'Comprehensive bond-back cleaning meeting real estate agent standards. Carpet steam clean available as an add-on.'},
                 ].map((s,i)=>(
                   <div key={i} onClick={open}
@@ -801,7 +688,7 @@
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Why Pristine</p>
                   <h2 className="text-4xl md:text-5xl font-normal text-black mb-6 leading-tight">Hobart's Most<br/>Trusted Cleaners</h2>
                   <p className="text-gray-600 leading-relaxed mb-8">
-                    With over 4 years of professional cleaning experience across Australia, Pristine is now bringing that same standard of excellence to Hobart and Greater Tasmania. From Airbnb hosts to real estate agents and commercial businesses, all backed by consistent results, no lock-in contracts, no hidden fees.
+                    With over 4 years of professional cleaning experience across Australia, Pristine is now bringing that same standard of excellence to Hobart and Greater Tasmania. From homeowners to real estate agents, all backed by consistent results, no lock-in contracts, no hidden fees.
                   </p>
                   <button onClick={open} className="bg-black text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
                     Get Your Free Quote
@@ -901,7 +788,7 @@
                   <Icon name="Sparkles" className="w-5 h-5" style={{fill:'black'}}/>
                   <span className="text-lg font-semibold">Pristine</span>
                 </div>
-                <p className="text-sm text-gray-500 leading-relaxed">Hobart's premium cleaning service for Airbnb, pre-sale, residential, and commercial properties across Tasmania.</p>
+                <p className="text-sm text-gray-500 leading-relaxed">Hobart's premium cleaning service for residential homes, pre-sale presentations, and end of lease properties across Tasmania.</p>
                 <div className="flex items-center gap-3 mt-4">
                   <a href="https://www.instagram.com/pristine.hobart/" target="_blank" rel="noopener noreferrer" aria-label="Pristine Cleaning Co. on Instagram"
                     className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-black hover:border-black transition-colors">
@@ -917,7 +804,7 @@
                 <div>
                   <p className="font-semibold text-black mb-3">Services</p>
                   <ul className="space-y-2 text-gray-500">
-                    {['Residential Cleaning','Carpet Steam Cleaning','Pre-Sale Clean','Airbnb Cleaning','Commercial','Construction','End of Lease'].map(s=>(
+                    {['Residential Cleaning','Carpet Steam Cleaning','Pre-Sale Clean','End of Lease'].map(s=>(
                       <li key={s} onClick={open} className="hover:text-black cursor-pointer transition-colors">{s}</li>
                     ))}
                   </ul>
