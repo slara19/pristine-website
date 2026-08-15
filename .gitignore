@@ -23,3 +23,6 @@ Hoja de ruta.docx
 
 # Local Claude Code settings
 .claude/settings.local.json
+
+# Generated quote PDFs (contain customer PII — never commit to a public repo)
+quotes/output/
