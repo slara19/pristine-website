@@ -21,8 +21,21 @@ Thumbs.db
 # Internal planning notes (not part of the site)
 Hoja de ruta.docx
 
-# Local Claude Code settings
-.claude/settings.local.json
+# Local Claude Code settings and skills (internal tooling, not the public site)
+/.claude/
 
-# Generated quote PDFs (contain customer PII — never commit to a public repo)
-quotes/output/
+# Internal business tooling — quote calculator, pricing formulas, generated
+# PDFs (may contain customer PII). Kept locally only, never published.
+/quotes/
+
+# Standalone backup copy of the site and its root-level assets — not used
+# by the deployed build (GitHub Pages only builds from cleaning-site/).
+# Kept locally as a personal reference/backup.
+/pristine.html
+/logo-export.html
+/Logo.PNG
+/santiago.jpg
+/favicon.svg
+
+# Project instructions for Claude Code (not part of the public site)
+/CLAUDE.md
