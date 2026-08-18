@@ -28,6 +28,9 @@ Hoja de ruta.docx
 # PDFs (may contain customer PII). Kept locally only, never published.
 /quotes/
 
+# Community department tooling — logo/brand asset generator and its output.
+/brand-assets/
+
 # Standalone backup copy of the site and its root-level assets — not used
 # by the deployed build (GitHub Pages only builds from cleaning-site/).
 # Kept locally as a personal reference/backup.
