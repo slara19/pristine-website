@@ -252,7 +252,7 @@ function QuoteModal({ onClose }) {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">✓</div>
               <h3 className="text-xl font-semibold text-black mb-2">Request Sent!</h3>
               <p className="text-gray-600 mb-4">Thanks {d.name ? d.name.split(' ')[0] : ''}! We'll review your details and get back to you within a few hours.</p>
-              <p className="text-sm text-gray-500">Questions? Call <a href="tel:0450349425" className="font-semibold text-black">0450 349 425</a></p>
+              <p className="text-sm text-gray-500">Questions? Call <a href="tel:0450349425" onClick={() => trackEvent('phone_click')} className="font-semibold text-black">0450 349 425</a></p>
             </div>
           ) : step === 1 ? (
             <div>
@@ -440,11 +440,20 @@ const TAB_CONTENT = {
   ),
 };
 
+/* ── ANALYTICS ────────────────────────────────────────────────────────────── */
+// Fires a GA4 event if gtag is loaded (no-op otherwise, e.g. in dev or if a
+// blocker strips it) — keeps conversion tracking from ever breaking the UI.
+function trackEvent(name, params = {}) {
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    window.gtag('event', name, params);
+  }
+}
+
 /* ── APP ──────────────────────────────────────────────────────────────────── */
 export default function App() {
   const [tab, setTab] = useState('residential');
   const [showForm, setShowForm] = useState(false);
-  const open = () => setShowForm(true);
+  const open = () => { trackEvent('generate_lead', { method: 'quote_form' }); setShowForm(true); };
 
   useEffect(() => {
     if (showForm) return;
@@ -473,7 +482,7 @@ export default function App() {
             <a href="#contact" className="text-sm text-gray-700 hover:text-black transition-colors">Contact</a>
           </div>
           <div className="flex items-center gap-4">
-            <a href="tel:0450349425" className="hidden md:flex items-center gap-1.5 text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap">
+            <a href="tel:0450349425" onClick={() => trackEvent('phone_click')} className="hidden md:flex items-center gap-1.5 text-sm text-gray-700 hover:text-black transition-colors whitespace-nowrap">
               <Phone className="w-4 h-4" /> 0450 349 425
             </a>
             <div className="hidden md:flex items-center gap-2 pl-4 border-l border-gray-200">
@@ -520,7 +529,7 @@ export default function App() {
           <button onClick={open} className="bg-black text-white px-8 py-3 rounded-full text-base font-medium hover:bg-gray-800 transition-colors">
             Get Free Quote
           </button>
-          <a href="tel:0450349425" className="text-sm text-gray-500 hover:text-black transition-colors">or call 0450 349 425</a>
+          <a href="tel:0450349425" onClick={() => trackEvent('phone_click')} className="text-sm text-gray-500 hover:text-black transition-colors">or call 0450 349 425</a>
         </div>
 
         {/* Tab bar */}
@@ -722,7 +731,7 @@ export default function App() {
               <button onClick={open} className="bg-white text-black px-8 py-3.5 rounded-full font-medium hover:bg-gray-100 transition-colors whitespace-nowrap">
                 Get Free Quote
               </button>
-              <a href="tel:0450349425" className="border border-gray-700 text-white px-8 py-3.5 rounded-full font-medium hover:border-gray-500 transition-colors text-center whitespace-nowrap">
+              <a href="tel:0450349425" onClick={() => trackEvent('phone_click')} className="border border-gray-700 text-white px-8 py-3.5 rounded-full font-medium hover:border-gray-500 transition-colors text-center whitespace-nowrap">
                 Call 0450 349 425
               </a>
             </div>
@@ -736,7 +745,16 @@ export default function App() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-6 justify-center text-sm text-gray-500">
-            {[{ Icon: MapPin, text: 'Hobart & Greater Tasmania' }, { Icon: Phone, text: '0450 349 425' }, { Icon: Mail, text: 'pristine.hobart@gmail.com' }].map((c, i) => (
+            {[
+              { Icon: MapPin, text: 'Hobart & Greater Tasmania' },
+              { Icon: Phone, text: '0450 349 425', href: 'tel:0450349425', track: 'phone_click' },
+              { Icon: Mail, text: 'pristine.hobart@gmail.com', href: 'mailto:pristine.hobart@gmail.com', track: 'email_click' },
+            ].map((c, i) => c.href ? (
+              <a key={i} href={c.href} onClick={() => trackEvent(c.track)}
+                className="flex items-center justify-center gap-2 whitespace-nowrap hover:text-white transition-colors">
+                <c.Icon className="w-4 h-4" /><span>{c.text}</span>
+              </a>
+            ) : (
               <div key={i} className="flex items-center justify-center gap-2 whitespace-nowrap">
                 <c.Icon className="w-4 h-4" /><span>{c.text}</span>
               </div>
