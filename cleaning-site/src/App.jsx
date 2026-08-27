@@ -737,7 +737,7 @@ export default function App() {
             </div>
             <div className="hidden sm:block w-px h-12 bg-gray-700" />
             <div className="flex items-center gap-3">
-              <img src="/santiago.jpg" alt="Santiago Lara" className="w-40 h-40 rounded-full object-cover border-2 border-gray-600" style={{ objectPosition: 'center 10%' }} />
+              <img src="/santiago.jpg" alt="Santiago Lara, founder of Pristine Cleaning Co." className="w-40 h-40 rounded-full object-cover border-2 border-gray-600" style={{ objectPosition: 'center 10%' }} />
               <div className="text-left">
                 <p className="text-white text-sm font-semibold">Santiago Lara</p>
                 <p className="text-gray-400 text-xs">Founder, Pristine Cleaning Co.</p>
