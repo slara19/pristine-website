@@ -565,6 +565,20 @@ export default function App() {
           </div>
         </div>
 
+        <div className="animate-fade-in-up mt-16 max-w-2xl mx-auto grid grid-cols-2 gap-4 md:gap-6"
+          style={{ opacity: 0, animationDelay: '0.75s' }}>
+          <div className="relative">
+            <img src="/gallery/hero-kitchen-routine.webp" alt="Routine kitchen clean, Hobart"
+              className="w-full aspect-[4/5] object-cover rounded-2xl" loading="lazy" />
+            <span className="absolute top-3 left-3 bg-black/70 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">Routine Kitchen Clean</span>
+          </div>
+          <div className="relative">
+            <img src="/gallery/hero-bathroom-2.webp" alt="Ensuite and shower clean, Hobart"
+              className="w-full aspect-[4/5] object-cover rounded-2xl" loading="lazy" />
+            <span className="absolute top-3 left-3 bg-black/70 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">Ensuite & Shower Clean</span>
+          </div>
+        </div>
+
         <div className="animate-fade-in-up mt-16 flex flex-wrap items-center justify-center gap-8"
           style={{ opacity: 0, animationDelay: '0.8s' }}>
           <span className="text-xs uppercase tracking-widest text-gray-400 font-medium">Trusted by</span>
@@ -664,25 +678,56 @@ export default function App() {
               <p className="text-gray-600 leading-relaxed mb-8">
                 With over 4 years of professional cleaning experience across Australia, Pristine is now bringing that same standard of excellence to Hobart and Greater Tasmania. From homeowners to real estate agents, all backed by consistent results, no lock-in contracts, no hidden fees.
               </p>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-8">
+                {[
+                  { Icon: Leaf,   title: 'Eco-Friendly Products' },
+                  { Icon: Clock,  title: 'Flexible Scheduling' },
+                  { Icon: Shield, title: 'Fully Insured' },
+                  { Icon: Award,  title: 'Satisfaction Guarantee' },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center flex-shrink-0">
+                      <f.Icon className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-black">{f.title}</span>
+                  </div>
+                ))}
+              </div>
               <button onClick={open} className="bg-black text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
                 Get Your Free Quote
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-5">
-              {[
-                { Icon: Leaf,   title: 'Eco-Friendly Products',  desc: 'Non-toxic, biodegradable solutions safe for families, children, and pets.' },
-                { Icon: Clock,  title: 'Flexible Scheduling',    desc: 'Book same-day or plan ahead. We work around your timeline, not the other way around.' },
-                { Icon: Shield, title: 'Fully Insured',          desc: 'Comprehensive public liability and workers compensation. Your property is fully protected.' },
-                { Icon: Award,  title: 'Satisfaction Guarantee', desc: "Not happy? We return within 24 hours and re-clean for free. No questions asked." },
-              ].map((f, i) => (
-                <div key={i} className="p-5 bg-white rounded-2xl">
-                  <div className="w-9 h-9 bg-black rounded-lg flex items-center justify-center mb-3">
-                    <f.Icon className="w-4 h-4 text-white" />
-                  </div>
-                  <h4 className="text-sm font-semibold text-black mb-1.5">{f.title}</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">{f.desc}</p>
-                </div>
-              ))}
+            <div className="relative mb-10 md:mb-0">
+              <img src="/gallery/oven-clean.webp" alt="Before and after oven deep clean, Hobart"
+                className="w-full aspect-[4/5] object-cover rounded-2xl" loading="lazy" />
+              <span className="absolute top-4 left-4 bg-black/70 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">Oven Deep Clean</span>
+              <img src="/gallery/driveway-clean.webp" alt="Before and after driveway clean, Hobart"
+                className="hidden sm:block absolute -bottom-8 -right-6 md:-right-10 w-2/5 aspect-[4/5] object-cover rounded-2xl border-4 border-gray-50 shadow-lg" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PRESENTATION SHOWCASE */}
+      <section className="py-24 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="relative order-2 md:order-1 mb-10 md:mb-0">
+              <img src="/gallery/presentation-kitchen.webp" alt="Presentation-ready kitchen clean, Hobart"
+                className="w-full aspect-[4/5] object-cover rounded-2xl" loading="lazy" />
+              <span className="absolute top-4 left-4 bg-black/70 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">Full Presentation Clean</span>
+              <img src="/gallery/presentation-bathroom.webp" alt="Presentation-ready bathroom clean, Hobart"
+                className="hidden sm:block absolute -bottom-8 -left-6 md:-left-10 w-2/5 aspect-[4/5] object-cover rounded-2xl border-4 border-white shadow-lg" loading="lazy" />
+            </div>
+            <div className="order-1 md:order-2">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Presentation Ready</p>
+              <h2 className="text-4xl md:text-5xl font-normal text-black mb-6 leading-tight">Every Room,<br />Guest-Ready</h2>
+              <p className="text-gray-600 leading-relaxed mb-8">
+                From short-stay turnovers to move-in ready homes, we clean every surface to a standard that holds up to close inspection: kitchens, bathrooms, and everything in between.
+              </p>
+              <button onClick={open} className="bg-black text-white px-6 py-3 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors">
+                Get Your Free Quote
+              </button>
             </div>
           </div>
         </div>

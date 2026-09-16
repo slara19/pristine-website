@@ -40,6 +40,15 @@ Hoja de ruta.docx
 /santiago.jpg
 /favicon.svg
 /favicon-96.png
+/gallery/
+
+# Raw source photos for social/site galleries (uncompressed originals) —
+# processed versions live in cleaning-site/public/gallery/.
+/Media/
 
 # Project instructions for Claude Code (not part of the public site)
 /CLAUDE.md
+
+# Consolidated business knowledge for the Claude mobile app Project
+# (pricing, brand voice) — internal only, never published.
+/PRISTINE_MOBILE_KNOWLEDGE.md
