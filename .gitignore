@@ -24,12 +24,16 @@ Hoja de ruta.docx
 # Local Claude Code settings and skills (internal tooling, not the public site)
 /.claude/
 
-# Internal business tooling — quote calculator, pricing formulas, generated
-# PDFs (may contain customer PII). Kept locally only, never published.
-/quotes/
+# Business departments: sales, accounting (invoices, expenses, receipts),
+# admin documents, brand assets and raw photos. Contains customer PII and
+# financial records. Kept locally only, never published.
+/business/
 
-# Community department tooling — logo/brand asset generator and its output.
+# Old locations of the folders above, kept so nothing is ever published by accident
+/quotes/
 /brand-assets/
+/Media/
+/Admin/
 
 # Standalone backup copy of the site and its root-level assets — not used
 # by the deployed build (GitHub Pages only builds from cleaning-site/).
@@ -41,10 +45,6 @@ Hoja de ruta.docx
 /favicon.svg
 /favicon-96.png
 /gallery/
-
-# Raw source photos for social/site galleries (uncompressed originals) —
-# processed versions live in cleaning-site/public/gallery/.
-/Media/
 
 # Project instructions for Claude Code (not part of the public site)
 /CLAUDE.md
