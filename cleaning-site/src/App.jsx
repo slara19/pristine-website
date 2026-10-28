@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import {
   Sparkles, TrendingUp, Key, Layers, Check, Phone, Mail, MapPin, Star, ArrowRight,
@@ -31,7 +31,7 @@ function Logo() {
       <Sparkles className="w-6 h-6" style={{ fill: 'black' }} />
       <div className="flex items-baseline gap-1.5">
         <span className="text-[22px] font-bold tracking-heading leading-none">Pristine</span>
-        <span className="text-[11px] font-w456 text-graphite leading-none whitespace-nowrap">Cleaning Co.</span>
+        <span className="text-[11px] font-w456 text-graphite leading-none whitespace-nowrap">Tassie Cleaning Co.</span>
       </div>
     </div>
   );
@@ -254,30 +254,43 @@ function QuoteModal({ onClose, initialSvc }) {
     }
   };
 
+  const dialogRef = useRef(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
+    // keyboard access: focus moves into the dialog, Esc closes it, focus returns to the button that opened it
+    const opener = document.activeElement;
+    dialogRef.current?.focus();
+    const onKey = e => { if (e.key === 'Escape') closeRef.current(); };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKey);
+      opener?.focus?.();
+    };
   }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-fade-in-overlay"
       style={{ backgroundColor: 'rgba(20,20,20,0.45)' }}
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg sm:mx-4 max-h-[92vh] flex flex-col shadow-float">
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="quote-title" tabIndex={-1}
+        className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg sm:mx-4 max-h-[92vh] flex flex-col shadow-float outline-none">
 
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-fog flex-shrink-0">
           <div>
-            <h2 className="text-xl font-semibold tracking-heading text-ink">Get your free quote</h2>
+            <h2 id="quote-title" className="text-xl font-semibold tracking-heading text-ink">Get your free quote</h2>
             {!done && (
               <div className="flex items-center gap-2 mt-2">
                 {['Service', 'Property', 'Your details'].map((s, i) => (
                   <React.Fragment key={s}>
                     <div className="flex items-center gap-1.5">
-                      <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold transition-colors ${step >= i + 1 ? 'bg-ink text-white' : 'bg-mist text-ash'}`}>
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold transition-colors ${step >= i + 1 ? 'bg-ink text-white' : 'bg-mist text-graphite'}`}>
                         {step > i + 1 ? '✓' : i + 1}
                       </div>
-                      <span className={`text-xs ${step === i + 1 ? 'text-ink font-w456' : 'text-ash'}`}>{s}</span>
+                      <span className={`text-xs ${step === i + 1 ? 'text-ink font-w456' : 'text-graphite'}`}>{s}</span>
                     </div>
                     {i < 2 && <div className="w-4 h-px bg-fog" />}
                   </React.Fragment>
@@ -349,7 +362,7 @@ function QuoteModal({ onClose, initialSvc }) {
         {!done && (
           <div className="px-6 py-4 border-t border-fog flex-shrink-0">
             {step === 1 ? (
-              <p className="text-xs text-center text-ash">Select a service above to continue</p>
+              <p className="text-xs text-center text-graphite">Select a service above to continue</p>
             ) : (
               <div className="flex gap-3">
                 <button onClick={() => setStep(s => s - 1)}
@@ -371,6 +384,11 @@ function QuoteModal({ onClose, initialSvc }) {
               </div>
             )}
             {sendError && <p className="text-xs text-red-600 text-center mt-2">{sendError}</p>}
+            {step === 3 && !sendError && (
+              <p className="text-xs text-center text-graphite mt-3">
+                We'll only use your details to reply to your quote. <a href="./privacy/" target="_blank" rel="noopener" className="underline hover:text-ink">Privacy Policy</a>
+              </p>
+            )}
           </div>
         )}
         {done && (
@@ -417,7 +435,7 @@ const STEPS = [
   { n: '01', title: 'Request your quote', desc: 'Fill in our quick form with your property details and preferred date. Takes under 2 minutes, no commitment required.' },
   { n: '02', title: 'Receive your quote', desc: 'We review your request and send a detailed, transparent quote within a few hours. No hidden fees, no surprises.' },
   { n: '03', title: 'We show up & deliver', desc: 'Our fully insured team arrives on time and cleans to the highest professional standard, every time, without exception.' },
-  { n: '04', title: '100% satisfied or free', desc: "Not happy with any part of the clean? We return within 24 hours and fix it at no cost. Guaranteed, no arguments." },
+  { n: '04', title: '100% satisfaction guarantee', desc: "Not happy with any part of the clean? We return within 24 hours and fix it at no cost. Guaranteed, no arguments." },
 ];
 
 function IncludedList({ items }) {
@@ -531,11 +549,11 @@ export default function App() {
               <Phone className="w-4 h-4" /> 0450 349 425
             </a>
             <div className="hidden md:flex items-center gap-2 pl-4 border-l border-gray-200">
-              <a href="https://www.instagram.com/pristine.hobart/" target="_blank" rel="noopener noreferrer" aria-label="Pristine Cleaning Co. on Instagram"
+              <a href="https://www.instagram.com/pristine.hobart/" target="_blank" rel="noopener noreferrer" aria-label="Pristine Tassie Cleaning Co. on Instagram"
                 className="text-gray-500 hover:text-black transition-colors">
                 <InstagramIcon className="w-4 h-4" strokeWidth="2" />
               </a>
-              <a href="https://www.facebook.com/profile.php?id=61592442795488" target="_blank" rel="noopener noreferrer" aria-label="Pristine Cleaning Co. on Facebook"
+              <a href="https://www.facebook.com/profile.php?id=61592442795488" target="_blank" rel="noopener noreferrer" aria-label="Pristine Tassie Cleaning Co. on Facebook"
                 className="text-gray-500 hover:text-black transition-colors">
                 <FacebookIcon className="w-4 h-4" strokeWidth="2" />
               </a>
@@ -729,14 +747,14 @@ export default function App() {
       {/* WHY PRISTINE */}
       <section id="why" className="px-6 py-20 scroll-mt-16">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 md:gap-16">
-          <h2 className="reveal text-4xl md:text-[56px] font-w652 tracking-display leading-[1.05] text-ink">Hobart's most trusted cleaners</h2>
+          <h2 className="reveal text-4xl md:text-[56px] font-w652 tracking-display leading-[1.05] text-ink">Why choose Pristine</h2>
           <div className="reveal" style={delay(150)}>
             <p className="text-lg font-w440 text-graphite leading-relaxed mb-8">
               With over 4 years of professional cleaning experience across Australia, Pristine is now bringing that same standard of excellence to Hobart and Greater Tasmania. From homeowners to real estate agents, all backed by consistent results, no lock-in contracts, no hidden fees.
             </p>
             <div className="grid grid-cols-2 gap-3 mb-8">
               {[
-                { Icon: Leaf,   title: 'Eco-friendly products' },
+                { Icon: Leaf,   title: 'Eco-friendly options on request' },
                 { Icon: Clock,  title: 'Flexible scheduling' },
                 { Icon: Shield, title: 'Fully insured' },
                 { Icon: Award,  title: 'Satisfaction guarantee' },
@@ -797,11 +815,11 @@ export default function App() {
             </div>
           </div>
           <figure className="relative">
-            <img src="/santiago.jpg" alt="Santiago Lara, founder of Pristine Cleaning Co." loading="lazy"
-              className="w-full aspect-square md:aspect-[4/5] object-cover rounded-3xl" style={{ objectPosition: 'center 15%' }} />
+            <img src="/founders.jpg" alt="Ginna and Santiago, founders of Pristine Tassie Cleaning Co., in their Pristine uniforms" loading="lazy"
+              className="w-full aspect-square md:aspect-[4/5] object-cover rounded-3xl" style={{ objectPosition: 'center 38%' }} />
             <figcaption className="absolute left-4 bottom-4 bg-white/90 backdrop-blur-sm rounded-full pl-4 pr-5 py-2.5">
-              <span className="block text-sm font-semibold text-ink leading-tight">Santiago Lara</span>
-              <span className="block text-xs text-graphite leading-tight">Founder, Pristine Cleaning Co.</span>
+              <span className="block text-sm font-semibold text-ink leading-tight">Ginna &amp; Santiago</span>
+              <span className="block text-xs text-graphite leading-tight">Founders, Pristine Tassie Cleaning Co.</span>
             </figcaption>
           </figure>
         </div>
@@ -814,15 +832,15 @@ export default function App() {
             <div className="mb-3"><Logo /></div>
             <p className="text-sm text-graphite leading-relaxed">Hobart's premium cleaning service for residential homes, carpets, pre-sale presentations and end of lease properties across Tasmania.</p>
             <div className="flex items-center gap-2 mt-5">
-              <a href="https://www.instagram.com/pristine.hobart/" target="_blank" rel="noopener noreferrer" aria-label="Pristine Cleaning Co. on Instagram"
+              <a href="https://www.instagram.com/pristine.hobart/" target="_blank" rel="noopener noreferrer" aria-label="Pristine Tassie Cleaning Co. on Instagram"
                 className="w-10 h-10 rounded-full border border-fog flex items-center justify-center text-ink hover:border-ink transition-colors">
                 <InstagramIcon className="w-4 h-4" />
               </a>
-              <a href="https://www.facebook.com/profile.php?id=61592442795488" target="_blank" rel="noopener noreferrer" aria-label="Pristine Cleaning Co. on Facebook"
+              <a href="https://www.facebook.com/profile.php?id=61592442795488" target="_blank" rel="noopener noreferrer" aria-label="Pristine Tassie Cleaning Co. on Facebook"
                 className="w-10 h-10 rounded-full border border-fog flex items-center justify-center text-ink hover:border-ink transition-colors">
                 <FacebookIcon className="w-4 h-4" />
               </a>
-              <a href={GOOGLE_PROFILE} target="_blank" rel="noopener noreferrer" aria-label="Pristine Cleaning Co. on Google Maps"
+              <a href={GOOGLE_PROFILE} target="_blank" rel="noopener noreferrer" aria-label="Pristine Tassie Cleaning Co. on Google Maps"
                 className="w-10 h-10 rounded-full border border-fog flex items-center justify-center text-ink hover:border-ink transition-colors">
                 <MapPin className="w-4 h-4" strokeWidth={1.5} />
               </a>
@@ -830,7 +848,7 @@ export default function App() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-10 text-sm">
             <div>
-              <p className="text-xs font-w456 text-ash uppercase tracking-wide mb-4">Services</p>
+              <p className="text-xs font-w456 text-graphite uppercase tracking-wide mb-4">Services</p>
               <ul className="space-y-2.5">
                 {SERVICES.map(s => (
                   <li key={s.id}><button onClick={() => open(s.id)} className="font-w440 text-ink hover:text-graphite transition-colors text-left">{s.title}</button></li>
@@ -838,13 +856,13 @@ export default function App() {
               </ul>
             </div>
             <div>
-              <p className="text-xs font-w456 text-ash uppercase tracking-wide mb-4">Service areas</p>
+              <p className="text-xs font-w456 text-graphite uppercase tracking-wide mb-4">Service areas</p>
               <ul className="space-y-2.5 font-w440 text-ink">
                 {['Hobart CBD', 'Sandy Bay', 'Battery Point', 'Kingston', 'Glenorchy', 'Greater Tasmania'].map(a => <li key={a}>{a}</li>)}
               </ul>
             </div>
             <div>
-              <p className="text-xs font-w456 text-ash uppercase tracking-wide mb-4">Company</p>
+              <p className="text-xs font-w456 text-graphite uppercase tracking-wide mb-4">Company</p>
               <ul className="space-y-2.5">
                 {[['#why', 'About us'], ['#work', 'Our work'], ['#how-it-works', 'How it works'], ['#contact', 'Contact']].map(([h, l]) => (
                   <li key={h}><a href={h} className="font-w440 text-ink hover:text-graphite transition-colors">{l}</a></li>
@@ -854,8 +872,12 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-fog text-xs text-ash">
-          © 2026 Pristine Cleaning Co. All rights reserved. Hobart, Tasmania, Australia.
+        <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-fog text-xs text-graphite flex flex-col md:flex-row md:justify-between gap-3">
+          <p>© 2026 Santiago Lara Ariza trading as Pristine Tassie Cleaning Co. ABN 59 933 594 680. Hobart, Tasmania, Australia.</p>
+          <p className="flex gap-5">
+            <a href="./privacy/" className="hover:text-ink transition-colors">Privacy Policy</a>
+            <a href="./terms/" className="hover:text-ink transition-colors">Terms of Service</a>
+          </p>
         </div>
       </footer>
     </div>
